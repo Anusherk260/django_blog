@@ -27,8 +27,16 @@ class HomeView(ListView):
 class SearchResults(HomeView):
     def get_queryset(self):
         query = self.request.GET.get('q')
-        qs = super().get_queryset().filter(title__iregex=query)
-        return get_updated_time(qs)
+        qs = super().get_queryset()
+        filtered = qs.filter(title__iregex=query)
+        print(filtered)
+        return filtered
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        qs = get_updated_time(self.get_queryset())
+        context['articles'] = qs
+        return context
 
 
 def home_view(request):
